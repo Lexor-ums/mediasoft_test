@@ -17,8 +17,11 @@ def parse_specific(income_dict):
     """
     tags_list = []
     for k, v in dict(income_dict).items():
-        tag_str = '<{0}>{1}</{0}>'.format(k, v)
-        tags_list.append(tag_str)
+        if type(v) == type([]):
+            tags_list.append('<{0}>{1}</{0}>'.format(k, parse_list(v)))
+        else:
+            tag_str = '<{0}>{1}</{0}>'.format(k, v)
+            tags_list.append(tag_str)
     return "\n".join(tags_list)
 
 
