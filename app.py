@@ -27,13 +27,18 @@ page_suffix = """
         </html>
 """
 
+
 class HTMLContentGenerator:
     def __init__(self, json_content):
         self.__generators = dict()
-        self.__json_content = json_content
+        self.__json_content = dict(json_content)
         self.__html_content = []
 
     def add_parser(self, **kwargs):
+        """
+        Функция добавляет новый парсер в колекцию
+        :param kwargs: ключ - ссылка на функцию
+        """
         self.__generators.update(kwargs)
 
     def __publish(self):
@@ -43,10 +48,15 @@ class HTMLContentGenerator:
             f.write(page_suffix)
 
     def publish_html(self):
+        """
+        Генерирует HTML-документ
+        """
         if len(self.__generators) == 0:
             raise ParseException("no parsers defined")
-        for item in self.__json_content:
-            self.__html_content.append(self.__generators["headers_gen"](item))
+        if self.__json_content.__contains__("body"):
+            self.__html_content.append(self.__generators["header_gen"](self.__json_content))
+        else:
+            self.__html_content.append(self.__generators["specific_gen"](self.__json_content))
         self.__publish()
 
 
@@ -58,8 +68,8 @@ if __name__ == "__main__":
 
     try:
         data = json.load((open(path)))
-        gen = HTMLContentGenerator(data)
-        gen.add_parser(headers_gen=parsers.parse_as_header)
+        gen = HTMLContentGenerator(data[0])
+        gen.add_parser(header_gen=parsers.parse_as_header, specific_gen=parsers.parse_specific)
         gen.publish_html()
 
     except FileExistsError as f_err:
