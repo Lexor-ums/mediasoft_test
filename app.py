@@ -31,7 +31,10 @@ page_suffix = """
 class HTMLContentGenerator:
     def __init__(self, json_content):
         self.__generators = dict()
-        self.__json_content = list(json_content)
+        if type(json_content) != type([]):
+            self.__json_content = [json_content]
+        else:
+            self.__json_content = json_content
         self.__html_content = []
 
     def add_parser(self, **kwargs):
@@ -53,6 +56,7 @@ class HTMLContentGenerator:
         """
         if len(self.__generators) == 0:
             raise ParseException("no parsers defined")
+        print(self.__json_content, len(self.__json_content))
         if len(self.__json_content) > 1:
             self.__html_content.append(self.__generators["list_gen"](self.__json_content))
         else:
@@ -70,7 +74,7 @@ if __name__ == "__main__":
         path = os.path.abspath(os.curdir) + '/' + sys.argv[1]
 
     try:
-        data = json.load((open(path)))
+        data = json.load(open(path))
         gen = HTMLContentGenerator(data)
         gen.add_parser(header_gen=parsers.parse_as_header,
                        specific_gen=parsers.parse_specific,
