@@ -31,7 +31,7 @@ page_suffix = """
 class HTMLContentGenerator:
     def __init__(self, json_content):
         self.__generators = dict()
-        self.__json_content = dict(json_content)
+        self.__json_content = list(json_content)
         self.__html_content = []
 
     def add_parser(self, **kwargs):
@@ -53,10 +53,13 @@ class HTMLContentGenerator:
         """
         if len(self.__generators) == 0:
             raise ParseException("no parsers defined")
-        if self.__json_content.__contains__("body"):
-            self.__html_content.append(self.__generators["header_gen"](self.__json_content))
+        if len(self.__json_content) > 1:
+            self.__html_content.append(self.__generators["list_gen"](self.__json_content))
         else:
-            self.__html_content.append(self.__generators["specific_gen"](self.__json_content))
+            if self.__json_content.__contains__("body"):
+                self.__html_content.append(self.__generators["header_gen"](self.__json_content[0]))
+            else:
+                self.__html_content.append(self.__generators["specific_gen"](self.__json_content[0]))
         self.__publish()
 
 
@@ -68,8 +71,10 @@ if __name__ == "__main__":
 
     try:
         data = json.load((open(path)))
-        gen = HTMLContentGenerator(data[0])
-        gen.add_parser(header_gen=parsers.parse_as_header, specific_gen=parsers.parse_specific)
+        gen = HTMLContentGenerator(data)
+        gen.add_parser(header_gen=parsers.parse_as_header,
+                       specific_gen=parsers.parse_specific,
+                       list_gen=parsers.parse_list)
         gen.publish_html()
 
     except FileExistsError as f_err:
