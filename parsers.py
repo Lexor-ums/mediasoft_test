@@ -45,6 +45,11 @@ def parse_list(income_list):
 
 
 def try_split(tag_type):
+    """
+    Функция проверяет сожержит ли т.г идентификаторы и классы
+    :param tag_type: строка с тэгом
+    :return: форматированный тэг
+    """
     tag_with_id = re.split("\#", tag_type)
     tag_with_no_id = re.split("\.", tag_type)
     if tag_with_id != [tag_type]:
@@ -60,6 +65,11 @@ def try_split(tag_type):
 
 
 def check_values(value_to_check):
+    """
+    Функция проверяет наличие скобок внутри содержимого тэга
+    :param value_to_check: отформатированное значение
+    :return:
+    """
     if str(value_to_check).__contains__("<") or str(value_to_check).__contains__("<"):
         res_str = str(value_to_check).replace("<", "&lt;")
         res_str = res_str.replace(">", "&gt;")
