@@ -56,7 +56,7 @@ def try_split(tag_type):
         id = tag_with_id[-1]
         classes = re.split("\.", tag_with_id[0])
         tag = classes[0]
-        return '{} id = \"{}\"class=\"{}\"'.format(tag, id, ".".join(classes[1:])), tag
+        return '{} id=\"{}\" class=\"{}\"'.format(tag, id, ".".join(classes[1:])), tag
     elif tag_with_no_id != [tag_type]:
         return '{} class=\"{}\"'.format(tag_with_no_id[0], ".".join(tag_with_no_id[1:])), tag_with_no_id[0]
     else:
@@ -70,7 +70,7 @@ def check_values(value_to_check):
     :param value_to_check: отформатированное значение
     :return:
     """
-    if str(value_to_check).__contains__("<") or str(value_to_check).__contains__("<"):
+    if str(value_to_check).__contains__("<") or str(value_to_check).__contains__(">"):
         res_str = str(value_to_check).replace("<", "&lt;")
         res_str = res_str.replace(">", "&gt;")
         return res_str;

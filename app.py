@@ -56,7 +56,6 @@ class HTMLContentGenerator:
         """
         if len(self.__generators) == 0:
             raise ParseException("no parsers defined")
-        print(self.__json_content, len(self.__json_content))
         if len(self.__json_content) > 1:
             self.__html_content.append(self.__generators["list_gen"](self.__json_content))
         else:
